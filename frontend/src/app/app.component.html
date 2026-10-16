@@ -1,0 +1,116 @@
+<main class="pagina">
+  <header class="cabecera">
+    <div>
+      <h1>Inventario</h1>
+      <p class="subtitulo">Agrega, edita y elimina los productos de la tienda.</p>
+    </div>
+    <dl class="resumen">
+      <div>
+        <dt>Productos</dt>
+        <dd>{{ productos().length }}</dd>
+      </div>
+      <div>
+        <dt>Valor en bodega</dt>
+        <dd>$ {{ valorInventario() | number: '1.0-0' }}</dd>
+      </div>
+    </dl>
+  </header>
+
+  @if (mensaje(); as m) {
+    <div class="aviso" [class.aviso-exito]="m.tipo === 'exito'" [class.aviso-error]="m.tipo === 'error'" role="status">
+      {{ m.texto }}
+    </div>
+  }
+
+  <div class="disposicion">
+    <!-- ============ FORMULARIO (Create / Update) ============ -->
+    <section class="panel formulario" [class.editando]="editandoId() !== null">
+      <h2>{{ editandoId() !== null ? 'Editar producto' : 'Nuevo producto' }}</h2>
+
+      <form (ngSubmit)="guardar()">
+        <label>
+          Nombre
+          <input type="text" name="nombre" [(ngModel)]="nombre" placeholder="Ej: Teclado mecánico" maxlength="100" />
+        </label>
+
+        <label>
+          Descripción <span class="opcional">(opcional)</span>
+          <textarea name="descripcion" [(ngModel)]="descripcion" rows="3" placeholder="Detalles del producto"></textarea>
+        </label>
+
+        <div class="dos-columnas">
+          <label>
+            Precio
+            <input type="number" name="precio" [(ngModel)]="precio" min="0" step="100" placeholder="0" />
+          </label>
+          <label>
+            Stock
+            <input type="number" name="stock" [(ngModel)]="stock" min="0" step="1" />
+          </label>
+        </div>
+
+        <div class="botones">
+          <button type="submit" class="btn btn-principal" [disabled]="guardando()">
+            {{ guardando() ? 'Guardando…' : (editandoId() !== null ? 'Guardar cambios' : 'Agregar producto') }}
+          </button>
+          @if (editandoId() !== null) {
+            <button type="button" class="btn btn-secundario" (click)="cancelar()">Cancelar</button>
+          }
+        </div>
+      </form>
+    </section>
+
+    <!-- ============ LISTA (Read / Delete) ============ -->
+    <section class="panel lista">
+      <div class="lista-cabecera">
+        <h2>Productos</h2>
+        <input class="buscador" type="search" name="busqueda" [(ngModel)]="busqueda" placeholder="Buscar por nombre" aria-label="Buscar por nombre" />
+      </div>
+
+      @if (cargando()) {
+        <p class="vacio">Cargando productos…</p>
+      } @else {
+        <div class="tabla-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Producto</th>
+                <th class="num">Precio</th>
+                <th class="num">Stock</th>
+                <th class="acciones-col"><span class="sr-only">Acciones</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (p of productosFiltrados(); track p.id) {
+                <tr [class.fila-activa]="editandoId() === p.id">
+                  <td>
+                    <strong>{{ p.nombre }}</strong>
+                    @if (p.descripcion) {
+                      <small>{{ p.descripcion }}</small>
+                    }
+                  </td>
+                  <td class="num">$ {{ p.precio | number: '1.0-2' }}</td>
+                  <td class="num">
+                    <span class="stock" [class.stock-bajo]="p.stock < 5" [class.stock-cero]="p.stock === 0">
+                      {{ p.stock }}
+                    </span>
+                  </td>
+                  <td class="acciones-col">
+                    <button class="btn-tabla" (click)="editar(p)">Editar</button>
+                    <button class="btn-tabla btn-peligro" (click)="eliminar(p)">Eliminar</button>
+                  </td>
+                </tr>
+              } @empty {
+                <tr>
+                  <td colspan="4" class="vacio">
+                    {{ busqueda() ? 'Ningún producto coincide con la búsqueda.' : 'Aún no hay productos. Agrega el primero con el formulario.' }}
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </section>
+  </div>
+</main>

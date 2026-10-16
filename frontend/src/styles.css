@@ -1,0 +1,45 @@
+:root {
+  --fondo: #eef1f5;
+  --superficie: #ffffff;
+  --tinta: #1c2433;
+  --tinta-suave: #5b6578;
+  --borde: #d8dde6;
+  --acento: #2f5bea;
+  --acento-oscuro: #2347bd;
+  --exito: #1f7a50;
+  --exito-fondo: #e3f4ec;
+  --peligro: #c0352b;
+  --peligro-fondo: #fbe7e5;
+  --aviso: #9a6412;
+  --aviso-fondo: #fdf3e1;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --fondo: #141a24;
+    --superficie: #1c2431;
+    --tinta: #e7ebf2;
+    --tinta-suave: #9aa4b6;
+    --borde: #2e394a;
+    --acento: #6b8cff;
+    --acento-oscuro: #8aa4ff;
+    --exito: #5fd39b;
+    --exito-fondo: #173326;
+    --peligro: #ff8a80;
+    --peligro-fondo: #3a1d1b;
+    --aviso: #f2c26b;
+    --aviso-fondo: #362a14;
+    color-scheme: dark;
+  }
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--fondo);
+  color: var(--tinta);
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  line-height: 1.5;
+}/* You can add global styles to this file, and also import other style files */
